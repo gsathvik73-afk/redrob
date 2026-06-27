@@ -8,9 +8,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import json
 import sys
-import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,16 +23,10 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--candidates", default="sample_candidates.json")
     parser.add_argument("--out", default="sandbox_submission.csv")
+    parser.add_argument("--top-n", type=int, default=100)
     args = parser.parse_args()
 
-    records = json.loads(Path(args.candidates).read_text(encoding="utf-8"))
-    if len(records) > 100:
-        records = records[:100]
-    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".jsonl", delete=False) as handle:
-        for rec in records:
-            handle.write(json.dumps(rec) + "\n")
-        tmp = handle.name
-    rows = rank_candidates(tmp, top_n=min(100, len(records)))
+    rows = rank_candidates(args.candidates, top_n=args.top_n)
     write_csv(rows, args.out)
     write_xlsx(rows, Path(args.out).with_suffix(".xlsx"))
     print(f"Wrote {args.out}")

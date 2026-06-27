@@ -1,0 +1,4 @@
+id,name,title,company,summary,location,years_of_experience,skills,last_active_date,open_to_work_flag,recruiter_response_rate,willing_to_relocate
+GEN_001,Asha Rao,Senior ML Engineer,ProductAI,"Built vector search, recommendation ranking, Python services, and NDCG evaluation for recruiter workflows.",Pune,7,"Python; embeddings; ranking; retrieval; FAISS; NDCG",2026-06-20,true,0.82,true
+GEN_002,Rahul Menon,Marketing Manager,AgencyCo,"Uses ChatGPT for content workflows and manages campaign operations.",Chennai,9,"Marketing; ChatGPT; Photoshop",2026-02-01,true,0.25,false
+GEN_003,Neha Singh,Search Engineer,MarketplaceCo,"Shipped hybrid search with Elasticsearch, embeddings, A/B tests, and ranking metrics.",Noida,6,"Python; Elasticsearch; search; embeddings; A/B testing",2026-06-15,true,0.76,false

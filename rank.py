@@ -17,7 +17,7 @@ from argus import config as C
 from argus.anomaly import apply_gate
 from argus.export import write_csv, write_xlsx
 from argus.features import extract_features, raw_score
-from argus.io import iter_jsonl
+from argus.io import iter_candidates
 from argus.reasoning import reasoning_for
 from argus.trust import trust_coeff
 
@@ -34,7 +34,7 @@ def rank_candidates(candidates_path: str | Path, top_n: int = C.TOP_N) -> list[d
     heap_size = max(top_n * 8, 800)
     heap: list[tuple[float, str, dict]] = []
     seen = 0
-    for rec in iter_jsonl(candidates_path):
+    for rec in iter_candidates(candidates_path):
         f = extract_features(rec)
         score = final_score(f)
         cid = str(f["candidate_id"])
@@ -44,8 +44,8 @@ def rank_candidates(candidates_path: str | Path, top_n: int = C.TOP_N) -> list[d
         elif item > heap[0]:
             heapq.heapreplace(heap, item)
         seen += 1
-    if seen < top_n:
-        raise RuntimeError(f"Need at least {top_n} candidates, found {seen}")
+    if seen == 0:
+        raise RuntimeError("No candidates found in input")
     ordered = sorted(heap, key=lambda x: (-x[0], x[1]))[:top_n]
     top_raw = ordered[0][0]
     bottom_raw = ordered[-1][0]
@@ -79,21 +79,27 @@ def validate_or_die(out_path: Path) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--candidates", required=True, help="Path to candidates.jsonl or candidates.jsonl.gz")
+    parser.add_argument("--candidates", required=True, help="Path to candidates input: .jsonl, .json, .csv, optionally .gz")
     parser.add_argument("--out", required=True, help="CSV output path")
     parser.add_argument("--xlsx", help="Optional XLSX output path; defaults to --out with .xlsx suffix")
+    parser.add_argument("--top-n", type=int, default=C.TOP_N, help="Number of candidates to rank; default 100")
+    parser.add_argument(
+        "--validate-redrob",
+        action="store_true",
+        help="Run the bundled strict Redrob validator; requires exactly 100 CAND_XXXXXXX rows",
+    )
     args = parser.parse_args(argv)
 
     out_path = Path(args.out)
-    rows = rank_candidates(args.candidates)
+    rows = rank_candidates(args.candidates, top_n=args.top_n)
     write_csv(rows, out_path)
     xlsx_path = Path(args.xlsx) if args.xlsx else out_path.with_suffix(".xlsx")
     write_xlsx(rows, xlsx_path)
-    validate_or_die(out_path)
+    if args.validate_redrob:
+        validate_or_die(out_path)
     print(f"Wrote {out_path} and {xlsx_path} ({len(rows)} rows).")
     return 0
 
 
 if __name__ == "__main__":
     sys.exit(main())
-

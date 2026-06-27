@@ -1,16 +1,48 @@
-# ARGUS Redrob Ranker
+# ARGUS Portable Candidate Ranker
 
 Deterministic, offline candidate ranker for the Redrob Senior AI Engineer challenge.
+It still reproduces the Redrob submission, but the input layer now accepts
+different candidate datasets as long as they provide broadly recognizable
+candidate fields.
 
-## Reproduce
+## Redrob Reproduce
 
 ```bash
-python rank.py --candidates ./candidates.jsonl --out ./submission.csv
+python rank.py --candidates ./candidates.jsonl --out ./submission.csv --validate-redrob
 python validate_submission.py ./submission.csv
 ```
 
 The rank command scans the JSONL once, computes JD-specific feature, trust, availability,
 and anomaly signals, then writes both `submission.csv` and `submission.xlsx`.
+
+## Generic Inputs
+
+```bash
+python rank.py --candidates ./my_candidates.csv --out ./ranked.csv --top-n 50
+python rank.py --candidates ./my_candidates.json --out ./ranked.csv --top-n 100
+python rank.py --candidates ./my_candidates.jsonl.gz --out ./ranked.csv --top-n 100
+```
+
+Supported input formats:
+
+- `.jsonl` / `.ndjson`, optionally `.gz`
+- `.json`, either a list, one record, or an object with `candidates`, `records`, or `data`
+- `.csv`, optionally `.gz`
+
+For non-Redrob data, the loader maps common field names into the internal schema:
+
+- IDs: `candidate_id`, `id`, `candidateId`
+- Profile: `name`, `full_name`, `headline`, `summary`, `bio`, `description`, `resume_text`
+- Role: `current_title`, `title`, `job_title`, `role`
+- Company/industry: `current_company`, `company`, `employer`, `industry`
+- Experience/location: `years_of_experience`, `yoe`, `experience`, `location`, `city`, `country`
+- Skills: `skills`, `skill_names`, `technologies`, `tech_stack`
+- Signals, when present: `last_active_date`, `open_to_work_flag`, `recruiter_response_rate`,
+  `interview_completion_rate`, `notice_period_days`, `willing_to_relocate`
+
+Generic runs skip the strict Redrob validator by default because external datasets may
+not use `CAND_XXXXXXX` IDs or exactly 100 rows. Add `--validate-redrob` only when
+producing an official Redrob submission.
 
 ## Method
 
@@ -26,7 +58,7 @@ used by the ranking step.
 ## Small Sandbox
 
 ```bash
-python sandbox/run_sample.py --candidates ./sample_candidates.json --out ./sandbox_submission.csv
+python sandbox/run_sample.py --candidates ./sample_candidates.json --out ./sandbox_submission.csv --top-n 50
 ```
 
 This runs the same rank path on the included sample candidate file.
