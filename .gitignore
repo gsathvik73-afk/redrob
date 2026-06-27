@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+candidates.jsonl
+candidates.jsonl.gz
+submission.csv
+submission.xlsx
+sandbox_submission.csv
+sandbox_submission.xlsx

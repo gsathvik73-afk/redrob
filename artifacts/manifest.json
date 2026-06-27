@@ -1,0 +1,6 @@
+{
+  "mode": "deterministic_feature_ranker",
+  "seed": 271828,
+  "today": "2026-06-27",
+  "note": "No hidden labels or hosted LLM calls are required for rank.py."
+}

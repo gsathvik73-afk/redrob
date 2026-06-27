@@ -1,0 +1,262 @@
+"""Single source of truth for ARGUS scoring constants."""
+
+from __future__ import annotations
+
+from datetime import date
+
+SEED = 271828
+TODAY = date(2026, 6, 27)
+TOP_N = 100
+
+SERVICES_FIRMS = {
+    "accenture",
+    "capgemini",
+    "cognizant",
+    "deloitte",
+    "genpact",
+    "hcl",
+    "hcltech",
+    "ibm",
+    "infosys",
+    "ltimindtree",
+    "mindtree",
+    "mphasis",
+    "persistent systems",
+    "tata consultancy services",
+    "tcs",
+    "tech mahindra",
+    "wipro",
+}
+
+PRODUCT_INDUSTRY_HINTS = {
+    "software",
+    "saas",
+    "internet",
+    "e-commerce",
+    "fintech",
+    "hr tech",
+    "marketplace",
+    "product",
+    "technology",
+    "ai",
+    "ml",
+}
+
+TECH_TITLE_TERMS = {
+    "engineer",
+    "developer",
+    "scientist",
+    "ml",
+    "machine learning",
+    "ai",
+    "data",
+    "backend",
+    "platform",
+    "search",
+    "ranking",
+    "recommendation",
+    "recommender",
+    "applied scientist",
+    "technical lead",
+}
+
+NONTECH_TITLE_TERMS = {
+    "marketing",
+    "sales",
+    "operations",
+    "support",
+    "designer",
+    "finance",
+    "hr",
+    "recruiter",
+    "content",
+    "business development",
+}
+
+BUILDER_VERBS = {
+    "architected",
+    "built",
+    "created",
+    "designed",
+    "developed",
+    "implemented",
+    "launched",
+    "led",
+    "owned",
+    "productionized",
+    "shipped",
+}
+
+SYSTEM_TERMS = {
+    "ab test",
+    "ab testing",
+    "a/b",
+    "candidate matching",
+    "elasticsearch",
+    "embedding",
+    "embeddings",
+    "evaluation",
+    "faiss",
+    "hybrid search",
+    "index",
+    "matching",
+    "milvus",
+    "mrr",
+    "ndcg",
+    "opensearch",
+    "personalization",
+    "pinecone",
+    "qdrant",
+    "ranker",
+    "ranking",
+    "recommendation",
+    "recommender",
+    "retrieval",
+    "search",
+    "vector",
+    "vector database",
+    "weaviate",
+}
+
+NLP_IR_TERMS = SYSTEM_TERMS | {
+    "bert",
+    "bge",
+    "bm25",
+    "cross encoder",
+    "dense retrieval",
+    "e5",
+    "fine tuning",
+    "fine-tuning",
+    "information retrieval",
+    "lambda mart",
+    "lambdamart",
+    "llm",
+    "lora",
+    "nlp",
+    "peft",
+    "rag",
+    "sentence transformer",
+    "sentence-transformer",
+    "transformer",
+    "xgboost",
+}
+
+CORE_MUST_HAVE = {
+    "python",
+    "embeddings",
+    "embedding",
+    "retrieval",
+    "ranking",
+    "search",
+    "recommendation",
+    "recommender",
+    "vector",
+    "faiss",
+    "milvus",
+    "qdrant",
+    "pinecone",
+    "weaviate",
+    "opensearch",
+    "elasticsearch",
+    "ndcg",
+    "mrr",
+    "map",
+    "a/b",
+    "ab test",
+    "evaluation",
+}
+
+CV_SPEECH_ROBOTICS = {
+    "ansys",
+    "autonomous",
+    "cad",
+    "computer vision",
+    "creo",
+    "gan",
+    "gans",
+    "image classification",
+    "object detection",
+    "robotics",
+    "solidworks",
+    "speech recognition",
+    "tts",
+}
+
+RECENT_LLM_ONLY = {
+    "chatgpt",
+    "langchain",
+    "llamaindex",
+    "openai api",
+    "prompt engineering",
+    "prompting",
+}
+
+TECH_LEXICON = CORE_MUST_HAVE | NLP_IR_TERMS | {
+    "airflow",
+    "aws",
+    "azure",
+    "bentoml",
+    "docker",
+    "fastapi",
+    "flask",
+    "gcp",
+    "kafka",
+    "kubernetes",
+    "lightgbm",
+    "numpy",
+    "pandas",
+    "pytorch",
+    "redis",
+    "scikit",
+    "spark",
+    "sql",
+    "tensorflow",
+}
+
+TARGET_CITIES = {
+    "pune",
+    "noida",
+    "delhi",
+    "gurgaon",
+    "gurugram",
+    "ncr",
+    "mumbai",
+    "hyderabad",
+    "bangalore",
+    "bengaluru",
+}
+
+PROFICIENCY = {
+    "beginner": 25.0,
+    "intermediate": 50.0,
+    "advanced": 75.0,
+    "expert": 95.0,
+}
+
+WEIGHTS = {
+    "yoe_band_fit": 9.0,
+    "tech_title": 7.0,
+    "core_skill_score": 14.0,
+    "nlp_ir_affinity": 9.0,
+    "built_system_score": 18.0,
+    "eval_score": 8.0,
+    "vector_score": 7.0,
+    "pre_llm_ranking_evidence": 8.0,
+    "product_ratio": 10.0,
+    "hands_on": 8.0,
+    "metric_density": 5.0,
+    "tool_density": 3.0,
+    "geo_fit": 4.0,
+    "availability": 8.0,
+    "channel_corro": 4.0,
+    "assessment": 5.0,
+    "education": 1.5,
+    "services_only_penalty": -12.0,
+    "nontech_penalty": -18.0,
+    "title_chaser_penalty": -6.0,
+    "cv_speech_penalty": -7.0,
+    "recent_llm_only_penalty": -8.0,
+    "stuffer_penalty": -18.0,
+    "manager_drift_penalty": -8.0,
+    "notice_penalty": -3.0,
+}

@@ -1,0 +1,19 @@
+# Fill portal/contact values before upload.
+team_name: ARGUS
+primary_contact_name: ""
+primary_contact_email: ""
+primary_contact_phone: ""
+github_repository_url: ""
+sandbox_demo_link: ""
+ai_tools_declared:
+  - ChatGPT
+compute_environment_summary: "CPU-only local Python 3.11; no network calls during ranking"
+methodology_summary: >
+  Deterministic feature ranker for the Senior AI Engineer JD. The system rewards
+  shipped ranking/search/retrieval/recommendation evidence, product-company ML
+  background, evaluation literacy, location fit, availability, and corroborated
+  assessments. It applies rule-based trust and anomaly gates for impossible
+  profiles, services-only histories, nontechnical AI keyword stuffing, and stale
+  engagement signals. The rank step is a single offline JSONL scan and emits CSV
+  plus XLSX outputs.
+
