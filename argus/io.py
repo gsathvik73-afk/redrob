@@ -41,7 +41,10 @@ def iter_jsonl(path: str | Path) -> Iterator[dict]:
                 rec = json.loads(line)
             except json.JSONDecodeError as exc:
                 raise ValueError(f"{p}:{line_no}: invalid JSON: {exc}") from exc
-            yield normalize_candidate(rec, line_no)
+            if is_native_candidate(rec):
+                yield rec
+            else:
+                yield normalize_candidate(rec, line_no)
 
 
 def iter_json(path: str | Path) -> Iterator[dict]:
@@ -126,6 +129,16 @@ def normalize_candidate(record: dict, index: int = 1) -> dict:
         "languages": [],
         "redrob_signals": signals,
     }
+
+
+def is_native_candidate(record: dict) -> bool:
+    return (
+        "candidate_id" in record
+        and "profile" in record
+        and "career_history" in record
+        and "skills" in record
+        and "redrob_signals" in record
+    )
 
 
 def first(record: dict, *keys: str) -> str:

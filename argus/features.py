@@ -7,7 +7,7 @@ from datetime import date
 
 from . import config as C
 from .io import candidate_text
-from .text import bounded, contains_any, count_terms, metric_density, normalize, term_density
+from .text import bounded, contains_any, contains_any_norm, count_terms_norm, metric_density, normalize
 
 
 def parse_date(value: object, default: date | None = None) -> date | None:
@@ -76,10 +76,10 @@ def built_system_hits(text: str) -> int:
     hits = 0
     chunks = [c.strip() for c in text.replace(";", ".").split(".") if c.strip()]
     for chunk in chunks:
-        verb_present = contains_any(chunk, C.BUILDER_VERBS)
+        verb_present = contains_any_norm(chunk, C.BUILDER_VERBS)
         if not verb_present:
             continue
-        term_hits = count_terms(chunk, C.SYSTEM_TERMS)
+        term_hits = count_terms_norm(chunk, C.SYSTEM_TERMS)
         if term_hits:
             hits += min(3, term_hits)
     return hits
@@ -90,7 +90,7 @@ def hands_on_recency(record: dict, today: date = C.TODAY) -> tuple[float, float]
     best_months = 999.0
     for role in record.get("career_history") or []:
         role_text = normalize(f"{role.get('title','')} {role.get('description','')}")
-        if not contains_any(role_text, hands):
+        if not contains_any_norm(role_text, hands):
             continue
         end = parse_date(role.get("end_date")) or today
         months = max(0.0, (today - end).days / 30.4)
@@ -103,7 +103,7 @@ def title_chaser(record: dict) -> float:
     if len(roles) < 3:
         return 0.0
     short = sum(1 for r in roles if int(r.get("duration_months") or 0) < 18)
-    senior_words = sum(1 for r in roles if contains_any(r.get("title", ""), {"senior", "staff", "principal", "lead", "head"}))
+    senior_words = sum(1 for r in roles if contains_any_norm(normalize(r.get("title", "")), {"senior", "staff", "principal", "lead", "head"}))
     return bounded((short / len(roles)) * (0.5 + 0.5 * bounded(senior_words / len(roles))))
 
 
@@ -167,21 +167,22 @@ def extract_features(record: dict) -> dict[str, float | str]:
     sig = record.get("redrob_signals") or {}
     text = normalize(candidate_text(record))
     skills_text = " ".join(normalize(s.get("name")) for s in record.get("skills") or [])
+    combined_text = f"{text} {skills_text}"
     title = normalize(profile.get("current_title"))
     yoe = float(profile.get("years_of_experience") or 0.0)
-    ai_skill_count = count_terms(skills_text, C.NLP_IR_TERMS | C.RECENT_LLM_ONLY)
-    nontech = 1.0 if contains_any(title, C.NONTECH_TITLE_TERMS) else 0.0
-    tech_title = 1.0 if contains_any(title, C.TECH_TITLE_TERMS) else 0.0
+    ai_skill_count = count_terms_norm(skills_text, C.NLP_IR_TERMS | C.RECENT_LLM_ONLY)
+    nontech = 1.0 if contains_any_norm(title, C.NONTECH_TITLE_TERMS) else 0.0
+    tech_title = 1.0 if contains_any_norm(title, C.TECH_TITLE_TERMS) else 0.0
     built_hits = built_system_hits(text)
     hands_on, hands_on_months = hands_on_recency(record)
     terms_total = max(1, len((record.get("skills") or [])) + len(text.split()) / 80)
-    core_hits = count_terms(text + " " + skills_text, C.CORE_MUST_HAVE)
-    nlp_hits = count_terms(text + " " + skills_text, C.NLP_IR_TERMS)
-    cv_hits = count_terms(text + " " + skills_text, C.CV_SPEECH_ROBOTICS)
+    core_hits = count_terms_norm(combined_text, C.CORE_MUST_HAVE)
+    nlp_hits = count_terms_norm(combined_text, C.NLP_IR_TERMS)
+    cv_hits = count_terms_norm(combined_text, C.CV_SPEECH_ROBOTICS)
     pre_llm = 0
     for role in record.get("career_history") or []:
         start = parse_date(role.get("start_date"))
-        if start and start.year < 2022 and contains_any(role.get("description", ""), C.SYSTEM_TERMS):
+        if start and start.year < 2022 and contains_any_norm(normalize(role.get("description", "")), C.SYSTEM_TERMS):
             pre_llm += 1
     assess = claim_assessment(record.get("skills") or [], sig.get("skill_assessment_scores") or {})
     avail = availability_coeff(sig)
@@ -190,7 +191,7 @@ def extract_features(record: dict) -> dict[str, float | str]:
     prod = product_ratio(record)
     svc_only = services_only(record)
     cv_pen = bounded(cv_hits / max(1, nlp_hits + cv_hits))
-    recent_llm_only = 1.0 if count_terms(text, C.RECENT_LLM_ONLY) >= 2 and pre_llm == 0 and built_hits == 0 else 0.0
+    recent_llm_only = 1.0 if count_terms_norm(text, C.RECENT_LLM_ONLY) >= 2 and pre_llm == 0 and built_hits == 0 else 0.0
     stuffer = 1.0 if nontech and ai_skill_count >= 4 else 0.0
     notice = float(sig.get("notice_period_days", 90) or 90)
     f: dict[str, float | str] = {
@@ -206,16 +207,16 @@ def extract_features(record: dict) -> dict[str, float | str]:
         "nlp_ir_affinity": bounded(nlp_hits / terms_total),
         "built_system_hits": float(built_hits),
         "built_system_score": bounded(built_hits / 5.0),
-        "eval_score": bounded(count_terms(text, {"ndcg", "mrr", "map", "a/b", "ab test", "evaluation", "offline benchmark"}) / 4.0),
-        "vector_score": bounded(count_terms(text, {"embedding", "embeddings", "vector", "faiss", "milvus", "qdrant", "pinecone", "weaviate", "opensearch", "elasticsearch"}) / 5.0),
+        "eval_score": bounded(count_terms_norm(text, {"ndcg", "mrr", "map", "a/b", "ab test", "evaluation", "offline benchmark"}) / 4.0),
+        "vector_score": bounded(count_terms_norm(text, {"embedding", "embeddings", "vector", "faiss", "milvus", "qdrant", "pinecone", "weaviate", "opensearch", "elasticsearch"}) / 5.0),
         "pre_llm_ranking_evidence": bounded(pre_llm / 2.0),
         "product_ratio": prod,
         "services_only": svc_only,
         "hands_on": hands_on,
         "hands_on_months": hands_on_months,
         "metric_density": bounded(metric_density(text) / 2.0),
-        "tool_density": bounded(term_density(text, C.TECH_LEXICON) / 5.0),
-        "geo_fit": 1.0 if contains_any(profile.get("location", ""), C.TARGET_CITIES) or sig.get("willing_to_relocate") else 0.0,
+        "tool_density": bounded((100.0 * count_terms_norm(text, C.TECH_LEXICON) / max(1, len(text.split()))) / 5.0),
+        "geo_fit": 1.0 if contains_any_norm(normalize(profile.get("location", "")), C.TARGET_CITIES) or sig.get("willing_to_relocate") else 0.0,
         "avail_coeff": avail,
         "response_rate": bounded(float(sig.get("recruiter_response_rate", 0) or 0)),
         "interview_completion": bounded(float(sig.get("interview_completion_rate", 0) or 0)),
@@ -225,7 +226,7 @@ def extract_features(record: dict) -> dict[str, float | str]:
         "recent_llm_only": recent_llm_only,
         "stuffer_flag": stuffer,
         "notice_penalty": bounded((notice - 30.0) / 150.0),
-        "manager_drift": 1.0 if contains_any(title, {"manager", "architect", "director", "head"}) and hands_on < 0.45 else 0.0,
+        "manager_drift": 1.0 if contains_any_norm(title, {"manager", "architect", "director", "head"}) and hands_on < 0.45 else 0.0,
         "consistency_flags": float(flags),
         "education": education_signal(record),
         **assess,

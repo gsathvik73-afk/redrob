@@ -15,6 +15,9 @@ python validate_submission.py ./submission.csv
 The rank command scans the JSONL once, computes JD-specific feature, trust, availability,
 and anomaly signals, then writes both `submission.csv` and `submission.xlsx`.
 
+Latest local full-pool benchmark on the provided 100,000-candidate Redrob file:
+`2:57.82` wall-clock for ranking plus strict validation on CPU.
+
 ## Generic Inputs
 
 ```bash

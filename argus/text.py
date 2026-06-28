@@ -14,7 +14,7 @@ NUMBER_METRIC_RE = re.compile(
 def normalize(text: object) -> str:
     if text is None:
         return ""
-    return re.sub(r"\s+", " ", str(text).lower()).strip()
+    return " ".join(str(text).lower().split())
 
 
 def tokens(text: object) -> list[str]:
@@ -22,17 +22,23 @@ def tokens(text: object) -> list[str]:
 
 
 def contains_any(text: str, terms: Iterable[str]) -> bool:
-    hay = normalize(text)
+    return contains_any_norm(normalize(text), terms)
+
+
+def contains_any_norm(hay: str, terms: Iterable[str]) -> bool:
     return any(term in hay for term in terms)
 
 
 def count_terms(text: str, terms: Iterable[str]) -> int:
-    hay = normalize(text)
-    return sum(hay.count(term) for term in terms)
+    return count_terms_norm(normalize(text), terms)
+
+
+def count_terms_norm(hay: str, terms: Iterable[str]) -> int:
+    return sum(hay.count(str(term).lower()) for term in terms if term)
 
 
 def word_count(text: str) -> int:
-    return max(1, len(tokens(text)))
+    return max(1, len(str(text).split()))
 
 
 def metric_density(text: str) -> float:
@@ -40,9 +46,9 @@ def metric_density(text: str) -> float:
 
 
 def term_density(text: str, terms: Iterable[str]) -> float:
-    return 100.0 * count_terms(text, terms) / word_count(text)
+    hay = normalize(text)
+    return 100.0 * count_terms_norm(hay, terms) / word_count(hay)
 
 
 def bounded(x: float, lo: float = 0.0, hi: float = 1.0) -> float:
     return max(lo, min(hi, x))
-
