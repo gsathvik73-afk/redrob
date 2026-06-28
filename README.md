@@ -57,8 +57,34 @@ used by the ranking step.
 
 ## Small Sandbox
 
+Browser app:
+
+```bash
+python sandbox/app.py --host 127.0.0.1 --port 7860
+```
+
+Then open:
+
+```text
+http://127.0.0.1:7860
+```
+
+The browser sandbox accepts uploaded CSV/JSON/JSONL/NDJSON files and returns
+downloadable CSV/XLSX rankings. It has no hosted-LLM or network dependency.
+
+CLI sample runner:
+
 ```bash
 python sandbox/run_sample.py --candidates ./sample_candidates.json --out ./sandbox_submission.csv --top-n 50
 ```
 
 This runs the same rank path on the included sample candidate file.
+
+## Make Targets
+
+```bash
+make rank          # full Redrob run + strict validation
+make validate      # validate submission.csv
+make sandbox-local # start local browser sandbox on 127.0.0.1:7860
+make audit         # compile and smoke-test generic input + current submission
+```

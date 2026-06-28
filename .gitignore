@@ -4,7 +4,9 @@ __pycache__/
 .venv/
 candidates.jsonl
 candidates.jsonl.gz
+data_set/
 submission.csv
 submission.xlsx
 sandbox_submission.csv
 sandbox_submission.xlsx
+sandbox_outputs/
