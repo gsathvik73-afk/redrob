@@ -53,6 +53,23 @@ compute:
   pre_computation_required: false               # true if you pre-compute embeddings or train models offline
   pre_computation_time_minutes: 0               # Approximate, if applicable
 
+# ============================================================================
+# AI tools declaration
+# ============================================================================
+# Transparency only — declared use is NOT penalized. Be honest. Stage 5 interview
+# may verify these declarations against your code; declarations that contradict
+# your code or your interview are flagged.
+ai_tools_used:
+  - "Claude"        # e.g. for architecture discussion, code review
+  - "GitHub Copilot"  # e.g. for autocomplete
+  # Other options: "ChatGPT", "Cursor", "Gemini", "Codeium", "Other", "None"
+
+ai_usage_summary: |
+  Briefly describe how AI tools were used. Examples:
+  - "Used Claude for code review and architectural discussion. Used Copilot for autocomplete.
+     No candidate data was fed to any LLM."
+  - "Used ChatGPT to debug Python issues and Cursor for refactoring."
+  - "No AI tools used."
 
 # ============================================================================
 # Approach summary (optional but recommended)
@@ -73,7 +90,7 @@ methodology_summary: |
 # ============================================================================
 declarations:
   read_submission_spec: true        # I have read submission_spec.md in full
-  code_is_original_work: true       # My code is my team's original work
+  code_is_original_work: true       # My code is my team's original work (using AI as a tool is fine)
   no_collusion: true                # I have not coordinated my submission with other teams
   honeypot_check_done: false        # OPTIONAL — set true if you explicitly checked for honeypots in your ranking
   reproduction_tested: true         # I have tested that my reproduce_command runs end-to-end

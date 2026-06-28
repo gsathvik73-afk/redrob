@@ -75,6 +75,12 @@ http://127.0.0.1:7860
 The browser sandbox accepts uploaded CSV/JSON/JSONL/NDJSON files and returns
 downloadable CSV/XLSX rankings. It has no hosted-LLM or network dependency.
 
+Hosted sandbox:
+
+```text
+https://huggingface.co/spaces/sath-speare/redrob-ranker
+```
+
 CLI sample runner:
 
 ```bash
