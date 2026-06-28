@@ -5,8 +5,6 @@ primary_contact_email: ""
 primary_contact_phone: ""
 github_repository_url: ""
 sandbox_demo_link: ""
-ai_tools_declared:
-  - ChatGPT
 compute_environment_summary: "CPU-only local Python 3.11; no network calls during ranking"
 methodology_summary: >
   Deterministic feature ranker for the Senior AI Engineer JD. The system rewards
