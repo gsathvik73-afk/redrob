@@ -51,9 +51,7 @@ ai_tools_used:
 
 ai_usage_summary: |
   Used ChatGPT/Codex for implementation assistance, code review, documentation,
-  local benchmarking, and sandbox setup. The submitted ranking step is
-  deterministic and offline: it does not call hosted LLM APIs, does not use a
-  GPU, and does not require network access.
+  local benchmarking, and sandbox setup.
 # ============================================================================
 # Approach summary
 # ============================================================================
