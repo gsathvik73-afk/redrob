@@ -3,18 +3,18 @@
 # ============================================================================
 # Team identity
 # ============================================================================
-team_name: "group"
+team_name: "Group"
 
 primary_contact:
-  name: "sathvik"
+  name: "Sathvik"
   email: "saisathvik127@gmail.com"
   phone: "+91 7406885858"
 
 team_members:
-  - name: "sai sathvik gullipalli"
+  - name: "Sai Sathvik Gullipalli"
     email: "saisathvik127@gmail.com"
     role: "Backend / design"
-  - name: "pratham mudakavi"
+  - name: "Pratham Mudakavi"
     email: "pratkavi2006@gmail.com"
     role: "Backend"
 
@@ -35,7 +35,7 @@ compute:
   cpu_cores: 8
   ram_gb: 32
   python_version: "3.12.13"
-  os: "MacOS 26.5.1"
+  os: "macOS 26.5.1"
   uses_gpu_for_inference: false
   has_network_during_ranking: false
   pre_computation_required: false
@@ -50,7 +50,10 @@ ai_tools_used:
   - "Codex"
 
 ai_usage_summary: |
-  Used ChatGPT/Codex for implementation assistance, code review and documentation , and the working of sandbox
+  Used ChatGPT/Codex for implementation assistance, code review, documentation,
+  local benchmarking, and sandbox setup. The submitted ranking step is
+  deterministic and offline: it does not call hosted LLM APIs, does not use a
+  GPU, and does not require network access.
 # ============================================================================
 # Approach summary
 # ============================================================================
